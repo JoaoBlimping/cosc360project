@@ -1,27 +1,38 @@
+package model;
+
 public class User
 {
-  private ObjectId id;
-  private String username;
-  private String password;
+  public final ObjectId id;
+  public final ObjectId level;
+  public final String username;
+  public final String password;
 
-  public User(String username,String password)
+
+  public User(ObjectId id,ObjectId level,String username,String password)
   {
+    this.id = id;
+    this.level = level;
     this.username = username;
     this.password = password;
   }
 
+
+  public User(Document bson)
+  {
+    id = bson.getObjectId("id");
+    level = bson.getObjectId("level");
+    username = bson.getString("username");
+    password = bson.getString("password");
+  }
+
+
   public Document toBson()
   {
-    List<Document> sessions = new ArrayList<>();
-    for (Session s : u.getSessions())
-    {
-        sessions.add(sessionToBson(s));
-    }
+    Document bson = new Document("_id",id);
+    bson.append("level",level);
+    bson.append("username",username);
+    bson.append("password",password);
 
-    return new Document("_id", new ObjectId(u.getId()))
-            .append("email", u.email)
-            .append("hash", u.getHash())
-            .append("sessions", sessions);
-
+    return bson;
   }
 }

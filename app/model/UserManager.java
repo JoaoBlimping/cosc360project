@@ -24,11 +24,18 @@ public class UserManager
       return getDB().getCollection("users");
   }
 
-  /** creates a user and returns their id*/
-  public int createUser(String username,String password)
+  /** creates a user */
+  public User createUser(String username,String password)
   {
-    BSON
+    if (getUsersCollection().find(new Document("username",username)).count() != 0)
+    {
+      throw new IllegalArgumentException();
+    }
 
+    User user = new User();//TODO: the stuff
+
+    getUsersCollection().insertOne(user.toBson());
+    return user;
   }
 
 }
