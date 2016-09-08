@@ -37,5 +37,4 @@ public class UserManager
     getUsersCollection().insertOne(user.toBson());
     return user;
   }
-
 }

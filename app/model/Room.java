@@ -1,6 +1,6 @@
 package model;
 
-public class Level
+public class Room
 {
   public final ObjectId id;
   public final ObjectId[] exits;
@@ -16,7 +16,7 @@ public class Level
     this.description = description;
   }
 
-  public Level(Document bson)
+  public Room(Document bson)
   {
     id = bson.getObjectId("_id");
     exits = bson.get("exits",ObjectId[]);
