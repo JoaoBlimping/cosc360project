@@ -4,6 +4,7 @@
 
 GET     /                           controllers.Menus.index()
 
+GET   /sessions   controllers.Menus.sessions()
 
 POST  /login      controllers.Game.doLogin
 POST  /register   controllers.Game.doRegister()

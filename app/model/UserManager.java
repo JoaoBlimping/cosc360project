@@ -1,40 +1,50 @@
 package model;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
+
+/** manages sessions */
 public class UserManager
 {
-  /** connection to the mongo server */
-  private MongoClient mongoClient;
+  /** links session ids to sessions */
+  private static ConcurrentHashMap<String,User> users = new ConcurrentHashMap<>();
 
-  /** creates a session manager and makes it's client to the mongo server */
-  protected SessionManager()
-  {
-    mongoClient = new MongoClient("turing.une.edu.au", 27017);
-  }
 
-  /** gives you access to the database */
-  protected MongoDatabase getDB()
+  /** start a session for a given user id */
+  public static User startUser(String name)
   {
-    return mongoClient.getDatabase("comp391_dbarron2");
-  }
-
-  /** gives you access to the user collection */
-  protected MongoCollection<Document> getUsersCollection()
-  {
-      return getDB().getCollection("users");
-  }
-
-  /** creates a user */
-  public User createUser(String username,String password)
-  {
-    if (getUsersCollection().find(new Document("username",username)).count() != 0)
+    for (User u:users.values())
     {
-      throw new IllegalArgumentException();
+      if (u.name.equals(name))
+      {
+        throw new IllegalArgumentException("name "+name+" is already in use");
+      }
     }
 
-    User user = new User();//TODO: the stuff
+    User u = new User(name);
+    users.put(u.id,u);
+    return u;
+  }
 
-    getUsersCollection().insertOne(user.toBson());
-    return user;
+  /** end a session by it's session id */
+  public static void endUser(String id)
+  {
+    users.remove(id);
+  }
+
+  /** gives you a session by it's session id */
+  public static User getUser(String id)
+  {
+    return users.get(id);
+  }
+
+  public static ArrayList<String> getUsernames()
+  {
+    ArrayList<String> names = new ArrayList<>();
+    for (User u:users.values()) names.add(u.name);
+    return names;
   }
 }

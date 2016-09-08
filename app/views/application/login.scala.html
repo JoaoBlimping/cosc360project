@@ -1,12 +1,9 @@
 @(error:String)
 
+@if(error != null){<div>@error</div>}
+
 <form action="login" method="POST">
-  <input name="username" type="text" />
-  <input name="password" type="text" />
-
-  @if(error != null){
-    <div>@error</div>
-  }
-
-  <button type="submit" value="submit" />
+  Your Name:
+  <input name="name" type="text" />
+  <input type="submit" value="submit" />
 </form>

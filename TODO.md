@@ -15,3 +15,5 @@
   - talking??
 
 - display each kind of events per room in a force directed graph.
+
+- add error checking and user input validation and stuff like that
