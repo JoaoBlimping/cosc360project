@@ -14,6 +14,11 @@ public class Menus extends Controller
     return ok(views.html.application.index.render());
   }
 
+  public Result loginForm()
+  {
+    return ok(views.html.application.login.render(null));
+  }
+
   public Result sessions()
   {
     return ok(views.html.application.sessions.render(UserManager.getUsernames()));

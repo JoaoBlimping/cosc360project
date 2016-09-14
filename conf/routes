@@ -2,14 +2,13 @@
 # This file defines all application routes (Higher priority routes first)
 # ~~~~
 
-GET     /                           controllers.Menus.index()
+GET   /           controllers.Menus.index()
 
 GET   /sessions   controllers.Menus.sessions()
+GET   /login      controllers.Menus.loginForm()
 
 POST  /login      controllers.Game.doLogin
-POST  /register   controllers.Game.doRegister()
-GET   /login      controllers.Game.loginForm()
-GET   /register   controllers.Game.registerForm()
+
 
 
 # Map static resources from the /public folder to the /assets URL path

@@ -35,38 +35,24 @@ public class Game extends Controller
       return internalServerError(e.getMessage());
     }
 
-    return ok("yeah loged in and stuff " + u.id);
+    return ok(views.html.application.game.render(u.id));
   }
 
 
-  public Result doRegister()
+  public Result getRoomDetails()
   {
-    return ok("nice");
-    /*
-    String email = request().body().asFormUrlEncoded().get("username")[0];
-    String password = request().body().asFormUrlEncoded().get("password")[0];
-
-    User u = new User(UUID.randomUUID().toString(),email,BCrypt.hashpw(password,BCrypt.gensalt()));
-
-    if (getUserService().registerUser(u) == null)
-    {
-      return badRequest(views.html.application.register.render("this user exists"));
-    }
-    else
-    {
-      return ok("nice");
-    }
-    */
+    //get the user id from the request to figure out which user it is
   }
 
-  public Result loginForm()
+  public Result getUserDetails()
   {
-    return ok(views.html.application.login.render(null));
+
   }
 
-  public Result registerForm()
+  public Result execute()
   {
-    return ok(views.html.application.register.render(null));
-
+    return ok("yeah, I'll get around to it");
   }
+
+
 }
