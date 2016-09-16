@@ -36,9 +36,10 @@ public class UserManager
   }
 
   /** gives you a session by it's session id */
-  public static User getUser(String id)
+  public static User getUser(String id) throws IllegalArgumentException
   {
-    return users.get(id);
+    if (users.containsKey(id)) return users.get(id);
+    else throw new IllegalArgumentException("user doesn't exist");
   }
 
   public static ArrayList<String> getUsernames()

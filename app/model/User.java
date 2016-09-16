@@ -11,7 +11,7 @@ public class User
   public final String id;
   public final String name;
 
-  public int level;
+  public long room;
 
   private long time;
 

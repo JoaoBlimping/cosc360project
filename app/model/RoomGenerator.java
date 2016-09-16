@@ -14,22 +14,23 @@ public class RoomGenerator
 
     public static final String[] MIDDLES = {"hill","plain","valley","cave",
             "mountain","cove","cairn","hollow","clearing","ravine","mesa",
-            "place","garden"};
+            "place","garden","clearing","floodplain","path","hole"};
 
     public static final String[] BRIDGES = {"covered in","densely populated with",
             "brimming with","lightly covered in","surrounded by"};
 
     public static final String[] ENDS = {"sand","grass","moss","ferns","shrubs",
             "flowers","clovers","thistles","dirt","dust","vines","snow","bones",
-            "insects","gemstones","rocks"};
+            "insects","gemstones","rocks","nettles","cobblestones","ash"};
 
 
     public static Room generateRoom()
     {
+        nRooms++;
         String start = STARTS[(int)Math.floor(Math.random() * STARTS.length)];
         String middle = MIDDLES[(int)Math.floor(Math.random() * MIDDLES.length)];
         String bridge = BRIDGES[(int)Math.floor(Math.random() * BRIDGES.length)];
         String end = ENDS[(int)Math.floor(Math.random() * ENDS.length)];
-        return new Room(nRooms,start+middle+bridge+end);
+        return new Room(nRooms,start+" "+middle+" "+bridge+" "+end);
     }
 }
