@@ -8,8 +8,8 @@ lazy val root = (project in file(".")).enablePlugins(PlayJava)
 
 routesGenerator := InjectedRoutesGenerator
 
+
 libraryDependencies ++= Seq(
   "org.mindrot" % "jbcrypt" % "0.3m",
   "org.mongodb" % "mongodb-driver" % "3.0.2"
-  )
-
+)

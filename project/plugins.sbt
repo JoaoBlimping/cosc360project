@@ -1,2 +1,3 @@
 // Use the Play sbt plugin for Play projects
-addSbtPlugin("com.typesafe.play" % "sbt-plugin" % "2.5.4")
+addSbtPlugin("com.typesafe.play" % "sbt-plugin" % "2.5.4" )
+addSbtPlugin("name.de-vries" % "sbt-typescript" % "0.3.0-beta.2")

@@ -1,13 +1,15 @@
 @(userId:String)
 
-<script src="@routes.Assets.at("javascripts/hello.js")"></script>
+
+<script src="https://unpkg.com/react@@15.3.1/dist/react.js"></script>
+<script src="https://unpkg.com/react-dom@@15.3.1/dist/react-dom.js"></script>
+<script src="https://unpkg.com/babel-core@@5.8.38/browser.min.js"></script>
+<script src="https://unpkg.com/jquery@@3.1.0/dist/jquery.min.js"></script>
+<script src="https://unpkg.com/remarkable@@1.6.2/dist/remarkable.min.js"></script>
+
+<script type="text/babel" src='@routes.Assets.at("javascripts/hello.js")'></script>
+
+<p>@userId</p>
 
 
-<h1>you are in the game</h1>
-
-<p>btw, your userId is @userId</p>
-
-
-<!-- first of all it needs to send a ajax to get the current level the user is in -->
-
-<!-- then send an ajax to get the level's details -->
+<div id="content"></div>
