@@ -1,8 +1,6 @@
 package model;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 
@@ -42,10 +40,19 @@ public class UserManager
     else throw new IllegalArgumentException("user doesn't exist");
   }
 
-  public static ArrayList<String> getUsernames()
+  /** gives you the names of all users */
+  public static List<String> getUsernames()
   {
-    ArrayList<String> names = new ArrayList<>();
+    LinkedList<String> names = new LinkedList<>();
     for (User u:users.values()) names.add(u.name);
+    return names;
+  }
+
+  /** gives you the names of all users in a room */
+  public static List<String> getUsersInRoom(long room)
+  {
+    LinkedList<String> names = new LinkedList<>();
+    for (User u:users.values())if (u.room == room) names.add(u.name);
     return names;
   }
 }

@@ -61,6 +61,7 @@ public class Game extends Controller
   }
 
 
+
   /** send a client the details on a room */
   public Result getRoomDetails()
   {
@@ -80,6 +81,10 @@ public class Game extends Controller
         ArrayNode exitList = roomData.putArray("exits");
         for (String exit:exitDescriptions) exitList.add(exit);
 
+        List<String> userNames = UserManager.getUsersInRoom(roomId);
+        ArrayNode userList = roomData.putArray("users");
+        for (String name:userNames) userList.add(name);
+
         return ok(roomData);
       }
       catch (IllegalArgumentException e)
@@ -97,7 +102,11 @@ public class Game extends Controller
     try
     {
       User u = UserManager.getUser(userId);
-      return ok(u.name+","+u.room);
+
+      ObjectNode userData = Json.newObject();
+      userData.put("name",u.name);
+      userData.put("roomId",u.room);
+      return ok(userData);
     }
     catch (IllegalArgumentException e)
     {
@@ -120,7 +129,7 @@ public class Game extends Controller
 
     try
     {
-      if (rawCommand.charAt(0) == 'd') commands.discover(userId);
+      if (rawCommand.charAt(0) == 'e') commands.explore(userId);
       else if (rawCommand.charAt(0) == 't') commands.take(userId,rawCommand.substring(rawCommand.indexOf(' ')));
       else throw new IllegalArgumentException();
     }

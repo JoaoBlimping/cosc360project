@@ -22,7 +22,11 @@ public class Commands
     {
         User u = UserManager.getUser(userId);
         Room r = roomManager.getRoom(u.room);
-        int chosenPath = Integer.parseInt(path.substring(5));
+
+        int chosenPath;
+        if (Character.isDigit(path.charAt(0))) chosenPath = Integer.parseInt(path);
+        else chosenPath = Integer.parseInt(path.substring(5));
+
 
         System.out.println("P"+path);
         System.out.println("ewf"+chosenPath);
@@ -31,7 +35,7 @@ public class Commands
         u.room = newRoom.id;
     }
 
-    public boolean discover(String userId) throws IllegalArgumentException
+    public boolean explore(String userId) throws IllegalArgumentException
     {
         User u = UserManager.getUser(userId);
         Room r = roomManager.getRoom(u.room);
