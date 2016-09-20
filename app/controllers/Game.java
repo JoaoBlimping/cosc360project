@@ -1,6 +1,12 @@
 package controllers;
 
 
+import akka.NotUsed;
+import akka.actor.Cancellable;
+import akka.dispatch.Futures;
+import akka.stream.javadsl.Flow;
+import akka.stream.javadsl.Sink;
+import akka.stream.javadsl.Source;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.inject.Inject;
@@ -9,16 +15,17 @@ import model.Room;
 import model.RoomManager;
 import model.User;
 import model.UserManager;
-import play.api.PlayException;
+import play.libs.EventSource;
 import play.libs.Json;
 import play.mvc.Controller;
+import play.mvc.Http;
 import play.mvc.Result;
-import org.mindrot.jbcrypt.BCrypt;
-import scala.reflect.internal.Kinds;
+import scala.concurrent.duration.Duration;
 
-import java.util.IllegalFormatCodePointException;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.concurrent.Future;
+
+import static java.util.concurrent.TimeUnit.MILLISECONDS;
 
 
 @Singleton
@@ -32,6 +39,7 @@ public class Game extends Controller
   {
     this.roomManager = roomManager;
     this.commands = commands;
+
   }
 
   /** log in a new user */
@@ -117,6 +125,7 @@ public class Game extends Controller
   /** executes a user command */
   public Result execute()
   {
+
     Map<String,String[]> data = request().body().asFormUrlEncoded();
 
     if (!data.containsKey("userId") || !data.containsKey("command"))
@@ -139,6 +148,20 @@ public class Game extends Controller
     }
 
     return ok("done");
+  }
+
+  /** sends a stream of events occuring in the game, or maybe just in a room i dunno */
+  public Result events()
+  {
+    final Source<EventSource.Event, ?> eventSource = getStringSource().map(EventSource.Event::event);
+    return ok().chunked(eventSource.via(EventSource.flow())).as(Http.MimeTypes.EVENT_STREAM);
+  }
+
+
+  private Source<String, ?> getStringSource()
+  {
+    final Source<String, NotUsed> tickSource = Source.fromFuture(Futures.successful("hello"));
+    return tickSource.map((list) -> list);
   }
 
 

@@ -13,6 +13,7 @@ POST  /login        controllers.Game.doLogin()
 POST  /roomDetails  controllers.Game.getRoomDetails()
 POST  /userDetails  controllers.Game.getUserDetails()
 POST  /execute      controllers.Game.execute()
+GET   /events       controllers.Game.events()
 
 
 # Map static resources from the /public folder to the /assets URL path

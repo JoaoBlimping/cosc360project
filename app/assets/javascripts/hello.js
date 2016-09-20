@@ -21,7 +21,15 @@ function getUserDetails(callback)
  * url is the url that the SSEs are coming from */
 function openEventSource(callback,url)
 {
+  var source = new EventSource(url);
+  source.onmessage = function(e)
+  {
+    console.log(e.data)
+    this.close();
+    openEventSource(callback,url);
 
+  };
+  source.onerror = function(e) {console.error("couldn't get event stream")};
 }
 
 
@@ -30,7 +38,11 @@ function openEventSource(callback,url)
 var Description = React.createClass({
 
   /** how the tag starts off */
-  getInitialState: function() {return {content:"nice one",exits:[],users:[],command:""}},
+  getInitialState: function()
+  {
+    return {content:"nice one",exits:[],users:[],command:"",error:false,
+            errorMsg:""};
+  },
 
   /** occurs when the tag is mounted */
   componentDidMount: function()
@@ -57,7 +69,7 @@ var Description = React.createClass({
   /** when the text in the form is changed */
   handleTextChange: function(e)
   {
-    this.setState({command: e.target.value});
+    this.setState({command: e.target.value,error:false});
   },
 
   /** when the submit button is pressed */
@@ -77,7 +89,8 @@ var Description = React.createClass({
 
       error: function(xhr, status, err)
       {
-        console.error("execute", status, err.toString());
+        this.setState({error:true,errorMsg:"couldn't do command \""
+                                           +this.state.command+"\""});
       }.bind(this)
     });
   },
@@ -88,7 +101,7 @@ var Description = React.createClass({
     var exits = [];
     for (var i = 0; i < this.state.exits.length;i++)
     {
-      exits.push(<li key={i}>Path{i} leads to {this.state.exits[i]}</li>);
+      exits.push(<li key={i}>"path{i}" leads to {this.state.exits[i]}</li>);
     }
     var users = [];
     for (var i = 0;i < this.state.users.length;i++)
@@ -108,15 +121,13 @@ var Description = React.createClass({
         <form className="commandForm" onSubmit={this.handleSubmit}>
           <input type="text" placeholder="what do you do?"
           value={this.state.command} onChange={this.handleTextChange} />
-          <input type="submit" value="activate" />
         </form>
+
+        <p className="error" hidden={!this.state.error}>{this.state.errorMsg}</p>
       </div>
     );
   }
 });
-
-
-
 
 
 
@@ -128,3 +139,6 @@ ReactDOM.render(
   <Description />,
   document.getElementById('content')
 );
+
+
+openEventSource(null,"events");
