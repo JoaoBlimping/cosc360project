@@ -11,11 +11,15 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import com.mongodb.Block;
+import com.mongodb.DBObject;
+import com.mongodb.client.FindIterable;
 import model.Room;
 import model.RoomManager;
 import model.User;
 import model.UserManager;
 import model.Database;
+import org.bson.Document;
 import org.bson.types.ObjectId;
 import play.libs.EventSource;
 import play.libs.Json;
@@ -158,19 +162,24 @@ public class Game extends Controller
   }
 
 
+  /** gets all the past events from the database to be graphed */
   public Result getPastEvents()
   {
     ObjectNode data = Json.newObject();
-    ArrayNode eventList = roomData.putArray("events");
-
-    database.getEventCollection().find();
-
-    for (Event e:)
-
-
-
-
-    return ok(database.getEventCollection());
+    ArrayNode eventList = data.putArray("events");
+    database.getEventCollection().find().forEach(new Block<Document>()
+    {
+      @Override
+      public void apply(final Document document)
+      {
+        ObjectNode event = Json.newObject();
+        event.put("user",(int)document.get("user"));
+        event.put("event",(String)document.get("event"));
+        event.put("room",(int)document.get("room"));
+        eventList.add(event);
+      }
+    });
+    return ok(data);
   }
 
   /** sends a stream of events occuring in the game, or maybe just in a room i dunno */
