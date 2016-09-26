@@ -173,9 +173,9 @@ public class Game extends Controller
       public void apply(final Document document)
       {
         ObjectNode event = Json.newObject();
-        event.put("user",(int)document.get("user"));
+        event.put("user",(String)document.get("user"));
         event.put("event",(String)document.get("event"));
-        event.put("room",(int)document.get("room"));
+        event.put("room",(long)document.get("room"));
         eventList.add(event);
       }
     });
