@@ -3,6 +3,7 @@ package controllers;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import model.*;
+import org.bson.types.ObjectId;
 
 /**
  * Created by daly on 14/09/16.
@@ -11,14 +12,16 @@ import model.*;
 public class Commands
 {
     RoomManager roomManager;
+    Database database;
 
     @Inject
-    public Commands(RoomManager roomManager)
+    public Commands(RoomManager roomManager,Database database)
     {
         this.roomManager = roomManager;
+        this.database = database;
     }
 
-    void take(String userId,String path) throws IllegalArgumentException
+    void take(ObjectId userId,String path) throws IllegalArgumentException
     {
         User u = UserManager.getUser(userId);
         Room r = roomManager.getRoom(u.room);
@@ -34,11 +37,13 @@ public class Commands
         Room newRoom = roomManager.getRoom(r.exits.get(chosenPath));
         u.room = newRoom.id;
 
+        database.addEvent(userId,"take",r.id);
+
         EventManager.activate(r.id,"leave "+u.name);
         EventManager.activate(newRoom.id,"newUser "+u.name);
     }
 
-    boolean explore(String userId) throws IllegalArgumentException
+    boolean explore(ObjectId userId) throws IllegalArgumentException
     {
         User u = UserManager.getUser(userId);
         Room r = roomManager.getRoom(u.room);
@@ -53,20 +58,17 @@ public class Commands
             newRoom.exits.add(r.id);
 
             EventManager.activate(r.id,"newPath "+newRoom.description);
+            database.addEvent(userId,"explore",r.id);
 
             return true;
         }
         else return false;
     }
 
-    void attack(String userId,String targetId)
-    {
-
-    }
-
-    void say(String userId,String content) throws IllegalArgumentException
+    void say(ObjectId userId,String content) throws IllegalArgumentException
     {
         User u = UserManager.getUser(userId);
+        database.addEvent(userId,"say",u.room);
         EventManager.activate(u.room,"say "+u.name+":"+content);
     }
 }

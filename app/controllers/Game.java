@@ -15,6 +15,7 @@ import model.Room;
 import model.RoomManager;
 import model.User;
 import model.UserManager;
+import org.bson.types.ObjectId;
 import play.libs.EventSource;
 import play.libs.Json;
 import play.mvc.Controller;
@@ -58,7 +59,7 @@ public class Game extends Controller
         User u = UserManager.startUser(name);
         u.room = roomManager.starterRoom;
         EventManager.activate(roomManager.starterRoom,"newUser "+u.name);
-        return ok(views.html.application.game.render(u.id));
+        return ok(views.html.application.game.render((u.id.toString())));
       }
       catch (IllegalArgumentException e)
       {
@@ -108,7 +109,7 @@ public class Game extends Controller
 
   /** send the client the details on a user */
   public Result getUserDetails() {
-    String userId = request().body().asFormUrlEncoded().get("userId")[0];
+    ObjectId userId = new ObjectId(request().body().asFormUrlEncoded().get("userId")[0]);
 
     try
     {
@@ -136,7 +137,7 @@ public class Game extends Controller
       return badRequest("needed arguments not given");
     }
 
-    String userId = data.get("userId")[0];
+    ObjectId userId = new ObjectId(data.get("userId")[0]);
     String rawCommand = data.get("command")[0];
 
     try

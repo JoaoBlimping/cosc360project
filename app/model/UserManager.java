@@ -1,5 +1,7 @@
 package model;
 
+import org.bson.types.ObjectId;
+
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -8,7 +10,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public class UserManager
 {
   /** links session ids to sessions */
-  private static ConcurrentHashMap<String,User> users = new ConcurrentHashMap<>();
+  private static ConcurrentHashMap<ObjectId,User> users = new ConcurrentHashMap<>();
 
 
   /** start a session for a given user id */
@@ -28,13 +30,13 @@ public class UserManager
   }
 
   /** end a session by it's session id */
-  public static void endUser(String id)
+  public static void endUser(ObjectId id)
   {
     users.remove(id);
   }
 
   /** gives you a session by it's session id */
-  public static User getUser(String id) throws IllegalArgumentException
+  public static User getUser(ObjectId id) throws IllegalArgumentException
   {
     if (users.containsKey(id)) return users.get(id);
     else throw new IllegalArgumentException("user doesn't exist");

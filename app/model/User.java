@@ -1,6 +1,9 @@
 package model;
 
 
+import org.bson.BSON;
+import org.bson.types.ObjectId;
+
 import java.util.UUID;
 
 /** since users are not persistent, this stores both the user data,
@@ -8,7 +11,7 @@ import java.util.UUID;
  */
 public class User
 {
-  public final String id;
+  public final ObjectId id;
   public final String name;
 
   public long room;
@@ -19,7 +22,7 @@ public class User
   /** creates a user */
   public User(String name)
   {
-    this.id = UUID.randomUUID().toString();
+    this.id = new ObjectId();
     this.name = name;
     this.time = System.currentTimeMillis();
   }
