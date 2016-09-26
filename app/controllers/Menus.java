@@ -32,7 +32,6 @@ public class Menus extends Controller
 
   public Result graph()
   {
-    return ok(database.getEventCollection().find().first().get("room").toString());
-    //return ok(views.html.application.graph.render());
+    return ok(views.html.application.graph.render());
   }
 }

@@ -15,6 +15,7 @@ import model.Room;
 import model.RoomManager;
 import model.User;
 import model.UserManager;
+import model.Database;
 import org.bson.types.ObjectId;
 import play.libs.EventSource;
 import play.libs.Json;
@@ -36,13 +37,14 @@ public class Game extends Controller
 {
   private RoomManager roomManager;
   private Commands commands;
+  private Database database;
 
   @Inject
-  public Game(RoomManager roomManager,Commands commands)
+  public Game(RoomManager roomManager,Commands commands,Database database)
   {
     this.roomManager = roomManager;
     this.commands = commands;
-
+    this.database = database;
   }
 
   /** log in a new user */
@@ -153,6 +155,22 @@ public class Game extends Controller
     }
 
     return ok("done");
+  }
+
+
+  public Result getPastEvents()
+  {
+    ObjectNode data = Json.newObject();
+    ArrayNode eventList = roomData.putArray("events");
+
+    database.getEventCollection().find();
+
+    for (Event e:)
+
+
+
+
+    return ok(database.getEventCollection());
   }
 
   /** sends a stream of events occuring in the game, or maybe just in a room i dunno */
