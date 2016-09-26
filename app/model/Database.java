@@ -18,6 +18,7 @@ public class Database
   public Database()
   {
     mongoClient = new MongoClient("127.0.0.1", 27017);
+    getDB().drop();
   }
 
   /** gives you all the events */
