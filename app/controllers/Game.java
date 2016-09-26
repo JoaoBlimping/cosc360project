@@ -172,10 +172,13 @@ public class Game extends Controller
       @Override
       public void apply(final Document document)
       {
+        Room r = roomManager.getRoom((long)document.get("room"));
+
         ObjectNode event = Json.newObject();
         event.put("user",document.get("user").toString());
         event.put("event",(String)document.get("event"));
-        event.put("room",roomManager.roomToJson((long)document.get("room")));
+        event.put("roomId",r.id);
+        roomManager.exitsToJson(r,event.putArray("exits"));
         eventList.add(event);
       }
     });

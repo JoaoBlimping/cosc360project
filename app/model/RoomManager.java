@@ -67,4 +67,9 @@ public class RoomManager
         for (String exit:exitDescriptions) exitList.add(exit);
         return roomData;
     }
+
+    public void exitsToJson(Room r,ArrayNode a)
+    {
+        for (long exit:r.exits) a.add(exit);
+    }
 }
