@@ -3,11 +3,11 @@ var userId = "";
 
 /** loads the user's current room from the server
  * callback is called when the request is successful */
-function getUserDetails(callback)
+function getUserDetails(callback,ctx)
 {
   $.ajax({url:"userDetails",dataType:"json",cache: false,data:{userId:userId},
     method:"post",
-    success: function(data) {callback(data)},
+    success: function(data) {callback(data,ctx)},
     error: function(xhr, status, err)
     {
       console.error("getUserDetails", status, err.toString());
@@ -19,15 +19,14 @@ function getUserDetails(callback)
 /** start waiting for SSEs
  * callback is called whenever there is a new event
  * url is the url that the SSEs are coming from */
-function openEventSource(callback,url)
+function openEventSource(callback,url,room)
 {
-  var source = new EventSource(url);
+  var source = new EventSource(url+"?roomId="+room);
   source.onmessage = function(e)
   {
-    console.log(e.data)
+    callback(e.data);
     this.close();
-    openEventSource(callback,url);
-
+    openEventSource(callback,url,room);
   };
   source.onerror = function(e) {console.error("couldn't get event stream")};
 }
@@ -41,13 +40,17 @@ var Description = React.createClass({
   getInitialState: function()
   {
     return {content:"nice one",exits:[],users:[],command:"",error:false,
-            errorMsg:""};
+            errorMsg:"",chat:""};
   },
 
   /** occurs when the tag is mounted */
   componentDidMount: function()
   {
-    getUserDetails(this.loadRoomData);
+    getUserDetails(function(user,ctx)
+    {
+        ctx.loadRoomData(user);
+        openEventSource(ctx.handleEvent,"events",user.roomId);
+    },this);
   },
 
   /** load a room into the description based on a user's details */
@@ -57,6 +60,7 @@ var Description = React.createClass({
       method:"post",
       success: function(data)
       {
+        $("chat").html("");
         this.setState({content:data.description,exits:data.exits,users:data.users});
       }.bind(this),
       error: function(xhr, status, err)
@@ -64,6 +68,41 @@ var Description = React.createClass({
         console.error(this.props.url, status, err.toString());
       }.bind(this)
     });
+  },
+
+  /** handles an event sent from the server */
+  handleEvent: function(event)
+  {
+    var type = event.substring(0,event.indexOf(" "));
+    var args = event.substring(event.indexOf(" ") + 1);
+
+
+    if (type == "newUser") this.setState({users:this.state.users.concat(args)})
+
+    if (type == "leave")
+    {
+      var newUsers = this.state.users;
+      for (var i = this.state.users.length;i >= 0;i--)
+      {
+        if (this.state.users[i] == args)
+        {
+          this.setState({users:this.state.users.splice(i-1,1)});
+        }
+      }
+    }
+
+    if (type == "newPath")
+    {
+      console.log(args);
+      this.setState({exits:this.state.exits.concat(args)});
+    }
+
+
+    if (type == "say")
+    {
+      var chat = $("#chat");
+      chat.html(chat.html()+args+"<br />");
+    }
   },
 
   /** when the text in the form is changed */
@@ -124,6 +163,8 @@ var Description = React.createClass({
         </form>
 
         <p className="error" hidden={!this.state.error}>{this.state.errorMsg}</p>
+
+        <div id="chat"></div>
       </div>
     );
   }
@@ -139,6 +180,3 @@ ReactDOM.render(
   <Description />,
   document.getElementById('content')
 );
-
-
-openEventSource(null,"events");

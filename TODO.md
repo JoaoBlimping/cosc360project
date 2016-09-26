@@ -1,8 +1,11 @@
-ok so when things seeking events connect, there is a special event source
-thing added to a collection of them, and when something event worthy
-happens they all activate, and then the users have to connect again to get
-the next event
+save the event data
+display the event data
+
+make it look pretty
 
 
-yeah, the users can be set to disconnect after than one message, and
-then connect again.
+
+
+ok so the database whill store them like this:
+it needs to store event, room, and userId.
+that's pretty much it.

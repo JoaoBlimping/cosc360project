@@ -1,0 +1,13 @@
+body
+{
+  background-color: blue;
+}
+
+
+.box
+{
+  background-color: lightblue;
+  text-align: center;
+  padding:5px;
+  margin:5px;
+}

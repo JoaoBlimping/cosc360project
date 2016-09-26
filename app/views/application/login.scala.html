@@ -1,9 +1,21 @@
 @(error:String)
 
-@if(error != null){<div>@error</div>}
 
-<form action="login" method="POST">
-  Your Name:
-  <input name="name" type="text" />
-  <input type="submit" value="submit" />
-</form>
+
+<link rel="stylesheet" href="@routes.Assets.at("stylesheets/main.css")" />
+
+<div class="box">
+  <h1>Welcome to Game</h1>
+  <h2>enter your name here to begin</h2>
+
+  <form action="login" method="POST">
+    Your Name:
+    <input name="name" type="text" />
+    <input type="submit" value="submit" />
+  </form>
+
+  @if(error != null){<div>@error</div>}
+
+  <a href="graph">Visualise Game Data</a>
+
+</div>

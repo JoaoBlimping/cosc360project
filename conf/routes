@@ -3,11 +3,11 @@
 # ~~~~
 
 GET   /             controllers.Menus.index()
+POST  /login        controllers.Game.doLogin()
 
 GET   /sessions     controllers.Menus.sessions()
-GET   /login        controllers.Menus.loginForm()
+GET   /graph        controllers.Menus.graph()
 
-POST  /login        controllers.Game.doLogin()
 
 #game mechanics
 POST  /roomDetails  controllers.Game.getRoomDetails()

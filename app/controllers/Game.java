@@ -20,9 +20,11 @@ import play.libs.Json;
 import play.mvc.Controller;
 import play.mvc.Http;
 import play.mvc.Result;
+import scala.concurrent.Promise;
 import scala.concurrent.duration.Duration;
 
 import java.util.*;
+import java.util.concurrent.Callable;
 import java.util.concurrent.Future;
 
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
@@ -55,6 +57,7 @@ public class Game extends Controller
       {
         User u = UserManager.startUser(name);
         u.room = roomManager.starterRoom;
+        EventManager.activate(roomManager.starterRoom,"newUser "+u.name);
         return ok(views.html.application.game.render(u.id));
       }
       catch (IllegalArgumentException e)
@@ -140,6 +143,7 @@ public class Game extends Controller
     {
       if (rawCommand.charAt(0) == 'e') commands.explore(userId);
       else if (rawCommand.charAt(0) == 't') commands.take(userId,rawCommand.substring(rawCommand.indexOf(' ')));
+      else if (rawCommand.charAt(0) == 's') commands.say(userId,rawCommand.substring(rawCommand.indexOf(' ')));
       else throw new IllegalArgumentException();
     }
     catch (IllegalArgumentException e)
@@ -153,15 +157,22 @@ public class Game extends Controller
   /** sends a stream of events occuring in the game, or maybe just in a room i dunno */
   public Result events()
   {
-    final Source<EventSource.Event, ?> eventSource = getStringSource().map(EventSource.Event::event);
+    Map<String,String[]> data = request().queryString();
+
+    if (!data.containsKey("roomId")) return badRequest("needed arguments not given");
+    long roomId = Long.parseLong(data.get("roomId")[0]);
+
+    final Source<EventSource.Event, ?> eventSource = getStringSource(roomId).map(EventSource.Event::event);
     return ok().chunked(eventSource.via(EventSource.flow())).as(Http.MimeTypes.EVENT_STREAM);
   }
 
 
-  private Source<String, ?> getStringSource()
+  private Source<String, ?> getStringSource(long roomId)
   {
-    final Source<String, NotUsed> tickSource = Source.fromFuture(Futures.successful("hello"));
-    return tickSource.map((list) -> list);
+    Promise<String> promise = Futures.promise();
+    EventManager.addPromise(roomId,promise);
+    final Source<String, NotUsed> dataSource = Source.fromFuture(promise.future());
+    return dataSource.map((list) -> list);
   }
 
 

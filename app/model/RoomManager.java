@@ -17,7 +17,7 @@ import java.util.concurrent.ConcurrentHashMap;
 @Singleton
 public class RoomManager
 {
-    public ConcurrentHashMap<Long,Room> rooms = new ConcurrentHashMap<>();
+    private ConcurrentHashMap<Long,Room> rooms = new ConcurrentHashMap<>();
     public long starterRoom;
 
     /** called when the room manager is started */

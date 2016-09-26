@@ -18,7 +18,7 @@ public class Commands
         this.roomManager = roomManager;
     }
 
-    public void take(String userId,String path) throws IllegalArgumentException
+    void take(String userId,String path) throws IllegalArgumentException
     {
         User u = UserManager.getUser(userId);
         Room r = roomManager.getRoom(u.room);
@@ -33,9 +33,12 @@ public class Commands
 
         Room newRoom = roomManager.getRoom(r.exits.get(chosenPath));
         u.room = newRoom.id;
+
+        EventManager.activate(r.id,"leave "+u.name);
+        EventManager.activate(newRoom.id,"newUser "+u.name);
     }
 
-    public boolean explore(String userId) throws IllegalArgumentException
+    boolean explore(String userId) throws IllegalArgumentException
     {
         User u = UserManager.getUser(userId);
         Room r = roomManager.getRoom(u.room);
@@ -48,13 +51,22 @@ public class Commands
             roomManager.addRoom(newRoom);
             r.exits.add(newRoom.id);
             newRoom.exits.add(r.id);
+
+            EventManager.activate(r.id,"newPath "+newRoom.description);
+
             return true;
         }
         else return false;
     }
 
-    public void attack(String userId,String targetId)
+    void attack(String userId,String targetId)
     {
 
+    }
+
+    void say(String userId,String content) throws IllegalArgumentException
+    {
+        User u = UserManager.getUser(userId);
+        EventManager.activate(u.room,"say "+u.name+":"+content);
     }
 }
